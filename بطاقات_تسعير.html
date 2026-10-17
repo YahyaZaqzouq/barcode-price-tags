@@ -39056,9 +39056,8 @@ function applyInventory(payload){
   })).filter(r => String(r.name).trim() !== '');
   populateSuppliers();
   renderBtn.disabled = false;
-  render();
   statusEl.className = 'status';
-  statusEl.textContent = `قائمة الأصناف جاهزة: ${rows.length} صنف${payload.source ? ' (من ' + payload.source + ')' : ''}. امسح الباركود أو اختر فلتر.`;
+  statusEl.textContent = `قائمة الأصناف جاهزة: ${rows.length} صنف${payload.source ? ' (من ' + payload.source + ')' : ''}. امسح الباركود، أو اختر فلتر، أو اضغط "عرض البطاقات".`;
   if(fileStatusPill) fileStatusPill.textContent = 'قائمة الأصناف الجاهزة';
   if(barcodeSearch) barcodeSearch.focus();
 }
