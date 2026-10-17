@@ -194,11 +194,114 @@
 
   .toolbar{
     display:flex;gap:12px;flex-wrap:wrap;justify-content:center;
+    align-items:center;
     background:var(--surface);
     border:1.5px dashed var(--border-dash);
     border-radius:14px;
-    padding:18px 20px;
+    padding:16px 20px;
   }
+  .field.inline{flex-direction:row;align-items:center;gap:8px;}
+  .field.inline select{width:180px;}
+  .field.inline > span{white-space:nowrap;}
+  .divider{width:1px;align-self:stretch;background:var(--border-dash);margin:0 6px;}
+
+  /* ---- collapsible card ---- */
+  details.card > summary.card-head{
+    position:relative;
+    display:block;
+    text-align:center;
+    margin-bottom:0;
+    cursor:pointer;
+    list-style:none;
+    user-select:none;
+  }
+  details.card > summary.card-head::-webkit-details-marker{display:none;}
+  details.card > summary.card-head .card-icon{
+    margin:0 auto 8px auto;
+    transition:margin .15s ease;
+  }
+  details.card > summary.card-head .card-title{margin:0;}
+  details.card > summary.card-head .chev{
+    position:absolute;
+    inset-inline-end:0;
+    top:4px;
+    width:26px;height:26px;
+    display:flex;align-items:center;justify-content:center;
+    border-radius:8px;
+    background:var(--pill-bg);
+    color:var(--ink-soft);
+    font-size:12px;
+    line-height:1;
+    transition:transform .2s ease, background .2s ease;
+  }
+  details.card > summary.card-head:hover .chev{background:#E2E8F0;}
+  details.card[open] > summary.card-head{margin-bottom:16px;}
+  details.card[open] > summary.card-head .chev{transform:rotate(180deg);}
+
+  /* ---- professional barcode scanner card ---- */
+  .scan-card{
+    background:linear-gradient(180deg,#FFFFFF 0%,#F5F9FF 100%);
+    border:1.5px solid #C6D6EC;
+    box-shadow:0 3px 14px rgba(22,50,79,.07);
+    padding:20px 22px;
+  }
+  .scan-head{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+  .scan-head .scan-icon{
+    width:44px;height:44px;flex:0 0 auto;
+    border-radius:12px;
+    background:var(--navy);
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:21px;
+  }
+  .scan-head .card-title{margin:0 0 3px 0;font-size:15.5px;}
+  .scan-head .card-desc{margin:0;text-align:right;font-size:12.5px;line-height:1.6;}
+  .scan-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;}
+  .scan-input-wrap{position:relative;flex:1 1 320px;min-width:240px;display:flex;align-items:center;}
+  .scan-input-wrap .scan-ic{
+    position:absolute;right:13px;display:flex;align-items:center;
+    color:var(--ink-soft);pointer-events:none;
+  }
+  .scan-input-wrap input{
+    width:100%;
+    padding:12px 44px 12px 14px;
+    border:1.5px solid var(--border-dash);
+    border-radius:10px;
+    font-size:15px;
+    font-family:var(--font);
+    font-weight:600;
+    color:var(--ink);
+    background:#fff;
+  }
+  .scan-input-wrap input::placeholder{font-weight:400;color:#9AA6B4;}
+  .scan-input-wrap input:focus{
+    outline:none;
+    border-color:var(--navy);
+    box-shadow:0 0 0 3px rgba(22,50,79,.12);
+  }
+  #scanBtn{padding:12px 26px;font-size:14.5px;}
+
+  /* ---- toggle switch ---- */
+  .switch{
+    display:flex;align-items:center;gap:10px;
+    cursor:pointer;font-size:13.5px;font-weight:600;color:var(--ink);
+    user-select:none;
+  }
+  .switch input{position:absolute;opacity:0;width:0;height:0;}
+  .switch-track{
+    position:relative;flex:0 0 auto;
+    width:44px;height:24px;border-radius:999px;
+    background:#CFD6DF;transition:background .2s ease;
+  }
+  .switch-dot{
+    position:absolute;top:3px;right:3px;
+    width:18px;height:18px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);
+    transition:transform .2s ease;
+  }
+  .switch input:checked + .switch-track{background:var(--navy);}
+  .switch input:checked + .switch-track .switch-dot{transform:translateX(-20px);}
+  .switch input:focus-visible + .switch-track{box-shadow:0 0 0 3px rgba(22,50,79,.18);}
 
   .preview-tray{
     margin-top:6px;
@@ -348,6 +451,30 @@
 <div class="wrap">
 <div class="panel no-print">
 
+  <div class="card scan-card" style="grid-column:1 / -1;">
+    <div class="scan-head">
+      <div class="scan-icon">🔍</div>
+      <div>
+        <p class="card-title">مسح الباركود</p>
+        <p class="card-desc">امسح الباركود أو اكتب الكود ثم اضغط Enter — يظهر الاستيكر جاهزًا للطباعة</p>
+      </div>
+    </div>
+    <div class="scan-row">
+      <div class="scan-input-wrap">
+        <span class="scan-ic" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 5v14M7 5v14M10 5v14M14 5v14M17 5v14M21 5v14"/></svg>
+        </span>
+        <input type="text" id="barcodeSearch" placeholder="امسح الباركود هنا…" autocomplete="off">
+      </div>
+      <button type="button" id="scanBtn">عرض الاستيكر</button>
+      <label class="switch">
+        <input type="checkbox" id="autoPrint">
+        <span class="switch-track"><span class="switch-dot"></span></span>
+        <span class="switch-label">طباعة تلقائية بعد المسح</span>
+      </label>
+    </div>
+  </div>
+
   <div class="card">
     <div class="card-head">
       <div class="card-icon">📄</div>
@@ -361,11 +488,12 @@
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-head">
+  <details class="card">
+    <summary class="card-head">
       <div class="card-icon">📐</div>
       <p class="card-title">أبعاد البطاقة والضريبة</p>
-    </div>
+      <span class="chev">▾</span>
+    </summary>
     <div class="row">
       <div class="field">
         <span>عرض البطاقة (مم)</span>
@@ -429,7 +557,7 @@
         </select>
       </div>
     </div>
-  </div>
+  </details>
 
   <div class="card" style="display:none;">
     <div class="card-head">
@@ -480,20 +608,12 @@
   <div class="toolbar" style="grid-column:1 / -1;">
     <button id="renderBtn" disabled>عرض البطاقات</button>
     <button id="printBtn" class="secondary" disabled>طباعة</button>
-    <div class="field" style="flex-direction:row; align-items:center; gap:8px;">
-      <span>مسح الباركود</span>
-      <input type="text" id="barcodeSearch" style="width:190px;" placeholder="امسح أو اكتب الكود ثم Enter" autocomplete="off">
-      <button type="button" id="scanBtn" class="secondary">عرض الاستيكر</button>
-    </div>
-    <label class="chk" style="align-self:center;">
-      <input type="checkbox" id="autoPrint">
-      اطبع تلقائيًا بعد المسح
-    </label>
-    <div class="field" style="flex-direction:row; align-items:center; gap:8px;">
+    <span class="divider"></span>
+    <div class="field inline">
       <span>فئة المنتج</span>
-      <select id="catFilter" style="width:180px;"></select>
+      <select id="catFilter"></select>
     </div>
-    <div class="field" style="flex-direction:row; align-items:center; gap:8px;">
+    <div class="field inline">
       <span>المورد</span>
       <div class="combo" id="supCombo">
         <input type="text" id="supSearch" placeholder="اكتب اسم المورد…" autocomplete="off">
