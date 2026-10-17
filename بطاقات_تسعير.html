@@ -559,30 +559,6 @@
     </div>
   </details>
 
-  <details class="card" open style="grid-column:1 / -1;">
-    <summary class="card-head">
-      <div class="card-icon">🖨️</div>
-      <p class="card-title">إعداد الطابعة الحرارية</p>
-      <span class="chev">▾</span>
-    </summary>
-    <div class="row">
-      <div class="field">
-        <label class="chk"><input type="checkbox" id="receiptMode" checked> طباعة كرت في كل صفحة (تقطع بعد كل كرت)</label>
-      </div>
-      <div class="field" id="rollWidthField">
-        <span>عرض رول الورق</span>
-        <select id="rollWidth">
-          <option value="58">58 مم</option>
-          <option value="80" selected>80 مم</option>
-        </select>
-      </div>
-    </div>
-    <div class="status" id="receiptNote" style="display:none; margin-top:12px;">
-      مهم: عرض الرول المختار هنا لازم يطابق حجم ورق الرول في إعدادات الطابعة بويندوز، ومن غير أي خيار "مناسب للصفحة / Fit to page" في نافذة الطباعة، عشان الإستيكر ميطلعش مكبّر أو بالعرض.
-      وللقطع التلقائي: خصائص طابعة EPSON TM-T20III → إعدادات الورق/القطع → "قطع بعد كل صفحة / Auto Cut".
-    </div>
-  </details>
-
   <details class="card" style="grid-column:1 / -1;">
     <summary class="card-head">
       <div class="card-icon">✍️</div>
@@ -38997,10 +38973,6 @@ const fontFamilySel = document.getElementById('fontFamily');
 const fontBold = document.getElementById('fontBold');
 const fontUnderline = document.getElementById('fontUnderline');
 const fontAlign = document.getElementById('fontAlign');
-const receiptMode = document.getElementById('receiptMode');
-const rollWidthField = document.getElementById('rollWidthField');
-const rollWidth = document.getElementById('rollWidth');
-const receiptNote = document.getElementById('receiptNote');
 const manName = document.getElementById('manName');
 const manCode = document.getElementById('manCode');
 const manPrice = document.getElementById('manPrice');
@@ -39338,20 +39310,14 @@ function applyTextStyle(){
 }
 
 function render(){
-  const isReceipt = receiptMode.checked;
-  const effectiveWidth = isReceipt ? parseFloat(rollWidth.value) : parseFloat(tagW.value);
-
-  document.documentElement.style.setProperty('--tag-w', effectiveWidth+'mm');
+  document.documentElement.style.setProperty('--tag-w', tagW.value+'mm');
   document.documentElement.style.setProperty('--tag-h', tagH.value+'mm');
   document.documentElement.style.setProperty('--gap', tagGap.value+'mm');
   applyTextStyle();
 
-  sheetEl.classList.toggle('receipt-mode', isReceipt);
-  receiptNote.style.display = isReceipt ? 'block' : 'none';
+  sheetEl.classList.add('receipt-mode');
 
-  pageStyleTag.textContent = isReceipt
-    ? `@media print{ @page{ size:${effectiveWidth}mm ${tagH.value}mm; margin:0; } }`
-    : `@media print{ @page{ margin:5mm; } }`;
+  pageStyleTag.textContent = `@media print{ @page{ size:${tagW.value}mm ${tagH.value}mm; margin:0; } }`;
 
   sheetEl.innerHTML = '';
   const list = filteredRows();
@@ -39509,12 +39475,7 @@ clearAllBtn.addEventListener('click', ()=>{
   statusEl.className = 'status';
   statusEl.textContent = 'تم مسح كل الأصناف.';
 });
-receiptMode.addEventListener('change', ()=>{
-  rollWidthField.style.display = receiptMode.checked ? 'flex' : 'none';
-  savePrintSettings();
-  if(rows.length) render();
-});
-[tagW,tagH,tagGap,vatRate,vatIncluded,rollWidth].forEach(el=>{
+[tagW,tagH,tagGap,vatRate,vatIncluded].forEach(el=>{
   el.addEventListener('change', ()=>{ savePrintSettings(); if(rows.length) render(); });
 });
 [fontSizeSel,fontFamilySel,fontBold,fontUnderline,fontAlign].forEach(el=>{
@@ -39524,13 +39485,11 @@ receiptMode.addEventListener('change', ()=>{
   });
 });
 
-// حفظ/استرجاع إعدادات الطباعة (عرض الرول، الأبعاد، الضريبة)
+// حفظ/استرجاع أبعاد البطاقة وإعدادات الضريبة
 const PRINT_SETTINGS_KEY = 'priceTagPrintSettings';
 function savePrintSettings(){
   try{
     localStorage.setItem(PRINT_SETTINGS_KEY, JSON.stringify({
-      receiptMode: receiptMode.checked,
-      rollWidth: rollWidth.value,
       tagW: tagW.value,
       tagH: tagH.value,
       tagGap: tagGap.value,
@@ -39543,8 +39502,6 @@ function loadPrintSettings(){
   try{
     const s = JSON.parse(localStorage.getItem(PRINT_SETTINGS_KEY) || 'null');
     if(!s) return;
-    if(typeof s.receiptMode === 'boolean') receiptMode.checked = s.receiptMode;
-    if(s.rollWidth) rollWidth.value = s.rollWidth;
     if(s.tagW) tagW.value = s.tagW;
     if(s.tagH) tagH.value = s.tagH;
     if(s.tagGap !== undefined && s.tagGap !== '') tagGap.value = s.tagGap;
@@ -39553,7 +39510,6 @@ function loadPrintSettings(){
   }catch(err){}
 }
 loadPrintSettings();
-rollWidthField.style.display = receiptMode.checked ? 'flex' : 'none';
 
 loadInventory();
 </script>
