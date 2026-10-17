@@ -559,11 +559,12 @@
     </div>
   </details>
 
-  <div class="card" style="display:none;">
-    <div class="card-head">
+  <details class="card" open style="grid-column:1 / -1;">
+    <summary class="card-head">
       <div class="card-icon">🖨️</div>
-      <p class="card-title">طابعة الفواتير الحرارية</p>
-    </div>
+      <p class="card-title">إعداد الطابعة الحرارية</p>
+      <span class="chev">▾</span>
+    </summary>
     <div class="row">
       <div class="field">
         <label class="chk"><input type="checkbox" id="receiptMode" checked> طباعة كرت في كل صفحة (تقطع بعد كل كرت)</label>
@@ -571,16 +572,16 @@
       <div class="field" id="rollWidthField">
         <span>عرض رول الورق</span>
         <select id="rollWidth">
-          <option value="58" selected>58 مم</option>
-          <option value="80">80 مم</option>
+          <option value="58">58 مم</option>
+          <option value="80" selected>80 مم</option>
         </select>
       </div>
     </div>
     <div class="status" id="receiptNote" style="display:none; margin-top:12px;">
-      ملحوظة: تقطيع الورق تلقائيًا بعد كل كرت بيتحكم فيه إعداد الطابعة نفسها مش المتصفح.
-      افتح خصائص طابعة EPSON TM-T20III في ويندوز، وفي إعدادات الورق/القطع (Cut) اختار "قطع بعد كل صفحة / Auto Cut after each page"، وتأكد إن حجم الورق متظبط على نفس عرض الرول ("58mm Receipt" مثلاً)، عشان كل كرت يتطبع كصفحة منفصلة ويتقطع بعدها.
+      مهم: عرض الرول المختار هنا لازم يطابق حجم ورق الرول في إعدادات الطابعة بويندوز، ومن غير أي خيار "مناسب للصفحة / Fit to page" في نافذة الطباعة، عشان الإستيكر ميطلعش مكبّر أو بالعرض.
+      وللقطع التلقائي: خصائص طابعة EPSON TM-T20III → إعدادات الورق/القطع → "قطع بعد كل صفحة / Auto Cut".
     </div>
-  </div>
+  </details>
 
   <details class="card" style="grid-column:1 / -1;">
     <summary class="card-head">
@@ -39510,10 +39511,11 @@ clearAllBtn.addEventListener('click', ()=>{
 });
 receiptMode.addEventListener('change', ()=>{
   rollWidthField.style.display = receiptMode.checked ? 'flex' : 'none';
+  savePrintSettings();
   if(rows.length) render();
 });
 [tagW,tagH,tagGap,vatRate,vatIncluded,rollWidth].forEach(el=>{
-  el.addEventListener('change', ()=>{ if(rows.length) render(); });
+  el.addEventListener('change', ()=>{ savePrintSettings(); if(rows.length) render(); });
 });
 [fontSizeSel,fontFamilySel,fontBold,fontUnderline,fontAlign].forEach(el=>{
   el.addEventListener('change', ()=>{
@@ -39521,6 +39523,37 @@ receiptMode.addEventListener('change', ()=>{
     if(rows.length && (el===fontAlign || el===fontSizeSel || el===fontFamilySel)) render();
   });
 });
+
+// حفظ/استرجاع إعدادات الطباعة (عرض الرول، الأبعاد، الضريبة)
+const PRINT_SETTINGS_KEY = 'priceTagPrintSettings';
+function savePrintSettings(){
+  try{
+    localStorage.setItem(PRINT_SETTINGS_KEY, JSON.stringify({
+      receiptMode: receiptMode.checked,
+      rollWidth: rollWidth.value,
+      tagW: tagW.value,
+      tagH: tagH.value,
+      tagGap: tagGap.value,
+      vatRate: vatRate.value,
+      vatIncluded: vatIncluded.checked
+    }));
+  }catch(err){}
+}
+function loadPrintSettings(){
+  try{
+    const s = JSON.parse(localStorage.getItem(PRINT_SETTINGS_KEY) || 'null');
+    if(!s) return;
+    if(typeof s.receiptMode === 'boolean') receiptMode.checked = s.receiptMode;
+    if(s.rollWidth) rollWidth.value = s.rollWidth;
+    if(s.tagW) tagW.value = s.tagW;
+    if(s.tagH) tagH.value = s.tagH;
+    if(s.tagGap !== undefined && s.tagGap !== '') tagGap.value = s.tagGap;
+    if(s.vatRate !== undefined && s.vatRate !== '') vatRate.value = s.vatRate;
+    if(typeof s.vatIncluded === 'boolean') vatIncluded.checked = s.vatIncluded;
+  }catch(err){}
+}
+loadPrintSettings();
+rollWidthField.style.display = receiptMode.checked ? 'flex' : 'none';
 
 loadInventory();
 </script>
