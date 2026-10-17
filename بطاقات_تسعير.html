@@ -429,13 +429,12 @@
     #sheet.receipt-mode{display:block;}
     .tag{page-break-inside:avoid; box-shadow:none;}
     #sheet.receipt-mode .tag{
+      page-break-after: always;
+      break-after: page;
       margin:0 auto;
-      left: var(--print-dx, 0mm);
-      top: var(--print-dy, 0mm);
     }
-    #sheet.receipt-mode .tag + .tag{
-      page-break-before: always;
-      break-before: page;
+    #sheet.receipt-mode .tag:last-child{
+      page-break-after: auto;
     }
     @page{margin:5mm;}
   }
@@ -499,18 +498,6 @@
       <div class="field">
         <span>عرض البطاقة (مم)</span>
         <input type="number" id="tagW" value="70" min="20" max="200">
-      </div>
-      <div class="field">
-        <span>عرض ورق الرول (مم)</span>
-        <input type="number" id="rollW" value="80" min="20" max="220">
-      </div>
-      <div class="field">
-        <span>إزاحة أفقية للطباعة (مم)</span>
-        <input type="number" id="printDx" value="0" min="-30" max="30" step="0.5">
-      </div>
-      <div class="field">
-        <span>إزاحة رأسية للطباعة (مم)</span>
-        <input type="number" id="printDy" value="0" min="-30" max="30" step="0.5">
       </div>
       <div class="field">
         <span>ارتفاع البطاقة (مم)</span>
@@ -38977,9 +38964,6 @@ const printBtn  = document.getElementById('printBtn');
 const statusEl  = document.getElementById('status');
 const sheetEl   = document.getElementById('sheet');
 const tagW = document.getElementById('tagW');
-const rollW = document.getElementById('rollW');
-const printDx = document.getElementById('printDx');
-const printDy = document.getElementById('printDy');
 const tagH = document.getElementById('tagH');
 const tagGap = document.getElementById('tagGap');
 const vatRate = document.getElementById('vatRate');
@@ -39329,13 +39313,11 @@ function render(){
   document.documentElement.style.setProperty('--tag-w', tagW.value+'mm');
   document.documentElement.style.setProperty('--tag-h', tagH.value+'mm');
   document.documentElement.style.setProperty('--gap', tagGap.value+'mm');
-  document.documentElement.style.setProperty('--print-dx', (parseFloat(printDx.value)||0)+'mm');
-  document.documentElement.style.setProperty('--print-dy', (parseFloat(printDy.value)||0)+'mm');
   applyTextStyle();
 
   sheetEl.classList.add('receipt-mode');
 
-  pageStyleTag.textContent = `@media print{ @page{ size:${rollW.value}mm ${tagH.value}mm; margin:0; } }`;
+  pageStyleTag.textContent = `@media print{ @page{ size:${tagW.value}mm ${tagH.value}mm; margin:0; } }`;
 
   sheetEl.innerHTML = '';
   const list = filteredRows();
@@ -39493,7 +39475,7 @@ clearAllBtn.addEventListener('click', ()=>{
   statusEl.className = 'status';
   statusEl.textContent = 'تم مسح كل الأصناف.';
 });
-[tagW,rollW,printDx,printDy,tagH,tagGap,vatRate,vatIncluded].forEach(el=>{
+[tagW,tagH,tagGap,vatRate,vatIncluded].forEach(el=>{
   el.addEventListener('change', ()=>{ savePrintSettings(); if(rows.length) render(); });
 });
 [fontSizeSel,fontFamilySel,fontBold,fontUnderline,fontAlign].forEach(el=>{
@@ -39509,9 +39491,6 @@ function savePrintSettings(){
   try{
     localStorage.setItem(PRINT_SETTINGS_KEY, JSON.stringify({
       tagW: tagW.value,
-      rollW: rollW.value,
-      printDx: printDx.value,
-      printDy: printDy.value,
       tagH: tagH.value,
       tagGap: tagGap.value,
       vatRate: vatRate.value,
@@ -39524,9 +39503,6 @@ function loadPrintSettings(){
     const s = JSON.parse(localStorage.getItem(PRINT_SETTINGS_KEY) || 'null');
     if(!s) return;
     if(s.tagW) tagW.value = s.tagW;
-    if(s.rollW) rollW.value = s.rollW;
-    if(s.printDx !== undefined && s.printDx !== '') printDx.value = s.printDx;
-    if(s.printDy !== undefined && s.printDy !== '') printDy.value = s.printDy;
     if(s.tagH) tagH.value = s.tagH;
     if(s.tagGap !== undefined && s.tagGap !== '') tagGap.value = s.tagGap;
     if(s.vatRate !== undefined && s.vatRate !== '') vatRate.value = s.vatRate;
