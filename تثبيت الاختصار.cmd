@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul
 title Install Price Tag Stickers shortcut
 echo ==========================================
 echo   Install "Price Tag Stickers" shortcut
