@@ -485,6 +485,10 @@
       <input type="text" id="barcodeSearch" style="width:190px;" placeholder="امسح أو اكتب الكود ثم Enter" autocomplete="off">
       <button type="button" id="scanBtn" class="secondary">عرض الاستيكر</button>
     </div>
+    <label class="chk" style="align-self:center;">
+      <input type="checkbox" id="autoPrint">
+      اطبع تلقائيًا بعد المسح
+    </label>
     <div class="field" style="flex-direction:row; align-items:center; gap:8px;">
       <span>فئة المنتج</span>
       <select id="catFilter" style="width:180px;"></select>
@@ -38888,6 +38892,7 @@ const selectedCount = document.getElementById('selectedCount');
 const catFilter = document.getElementById('catFilter');
 const barcodeSearch = document.getElementById('barcodeSearch');
 const scanBtn = document.getElementById('scanBtn');
+const autoPrintChk = document.getElementById('autoPrint');
 const supSearch = document.getElementById('supSearch');
 const supList = document.getElementById('supList');
 const pageStyleTag = document.createElement('style');
@@ -38910,11 +38915,27 @@ function matchesScan(r){
   return bc === t || cd === t || (bc && normCode(bc) === normCode(t)) || (cd && normCode(cd) === normCode(t));
 }
 
+function clearScanView(){
+  scanMode = { active:false, term:'' };
+  sheetEl.innerHTML = '';
+  selectBar.style.display = 'none';
+  printBtn.disabled = true;
+}
+
 function runScan(){
   const t = barcodeSearch.value.trim();
-  if(!t){ scanMode = { active:false, term:'' }; if(rows.length) render(); return; }
+  if(!t){ clearScanView(); return; }
   scanMode = { active:true, term:t };
   render();
+  const found = sheetEl.querySelectorAll('.tag').length;
+  if(found > 0 && autoPrintChk.checked){
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      window.print();
+      setTimeout(()=>{ barcodeSearch.value=''; barcodeSearch.focus(); }, 120);
+    }));
+  }else if(found === 0){
+    barcodeSearch.select();
+  }
 }
 
 // populate category filter dropdown
@@ -39313,7 +39334,28 @@ catFilter.addEventListener('change', ()=>{ exitScan(); if(rows.length) render();
 scanBtn.addEventListener('click', runScan);
 barcodeSearch.addEventListener('keydown', (e)=>{
   if(e.key === 'Enter'){ e.preventDefault(); runScan(); }
-  else if(e.key === 'Escape'){ exitScan(); if(rows.length) render(); }
+  else if(e.key === 'Escape'){ exitScan(); clearScanView(); }
+});
+
+// حفظ/استرجاع خيار الطباعة التلقائية
+try{ autoPrintChk.checked = localStorage.getItem('priceTagAutoPrint') === '1'; }catch(err){}
+autoPrintChk.addEventListener('change', ()=>{
+  try{ localStorage.setItem('priceTagAutoPrint', autoPrintChk.checked ? '1' : '0'); }catch(err){}
+  if(autoPrintChk.checked) barcodeSearch.focus();
+});
+
+// لما الطباعة التلقائية مفعّلة: أي كتابة خارج الحقول تروح لخانة المسح (أجهزة الباركود)
+document.addEventListener('keydown', (e)=>{
+  if(!autoPrintChk.checked) return;
+  const el = document.activeElement;
+  const tag = (el && el.tagName || '').toLowerCase();
+  if(tag === 'input' || tag === 'select' || tag === 'textarea' || tag === 'button') return;
+  if(e.key === 'Enter'){ barcodeSearch.focus(); return; }
+  if(e.key.length === 1 && /\S/.test(e.key)){
+    e.preventDefault();
+    barcodeSearch.focus();
+    barcodeSearch.value += e.key;
+  }
 });
 printBtn.addEventListener('click', ()=>window.print());
 addManualBtn.addEventListener('click', ()=>{
