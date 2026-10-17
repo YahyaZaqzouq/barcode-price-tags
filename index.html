@@ -429,13 +429,11 @@
     #sheet.receipt-mode{display:block;}
     .tag{page-break-inside:avoid; box-shadow:none;}
     #sheet.receipt-mode .tag{
-      page-break-after: always;
-      break-after: page;
       margin:0 auto;
     }
-    #sheet.receipt-mode .tag:last-child{
-      page-break-after: auto;
-      break-after: auto;
+    #sheet.receipt-mode .tag + .tag{
+      page-break-before: always;
+      break-before: page;
     }
     @page{margin:5mm;}
   }
