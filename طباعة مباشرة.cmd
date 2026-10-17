@@ -1,10 +1,10 @@
 @echo off
-title Price Tag Stickers - Direct Print
+title Price Tag Stickers - Print Settings
 
 rem ==========================================================
-rem  Opens the price-tag tool in direct-print mode
-rem  (kiosk-printing): prints straight to the default printer
-rem  with no settings dialog.
+rem  Opens the price-tag tool. The print dialog is SHOWN so the
+rem  settings (orientation = landscape, margins = none, scale = 100%)
+rem  can be set. Chrome remembers them in this browser profile.
 rem ==========================================================
 
 set "URL=https://yahyazaqzouq.github.io/barcode-price-tags/"
@@ -21,15 +21,15 @@ set "EDGE=%ProgramFiles%\Microsoft\Edge\Application\msedge.exe"
 if not exist "%EDGE%" set "EDGE=%ProgramFiles(x86)%\Microsoft\Edge\Application\msedge.exe"
 
 if exist "%CHROME%" (
-  start "" "%CHROME%" --kiosk-printing --no-first-run --user-data-dir="%PROFILE%" --app=%URL%
+  start "" "%CHROME%" --no-first-run --user-data-dir="%PROFILE%" --app=%URL%
   goto :end
 )
 if exist "%BRAVE%" (
-  start "" "%BRAVE%" --kiosk-printing --no-first-run --user-data-dir="%PROFILE%" --app=%URL%
+  start "" "%BRAVE%" --no-first-run --user-data-dir="%PROFILE%" --app=%URL%
   goto :end
 )
 if exist "%EDGE%" (
-  start "" "%EDGE%" --kiosk-printing --no-first-run --user-data-dir="%PROFILE%" --app=%URL%
+  start "" "%EDGE%" --no-first-run --user-data-dir="%PROFILE%" --app=%URL%
   goto :end
 )
 
