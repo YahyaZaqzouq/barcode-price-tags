@@ -12,324 +12,206 @@
     --tag-h: 35mm;
     --gap: 3mm;
 
-    /* palette — plain, minimal, matches reference tool */
-    --bg:#EEF2F7;
-    --surface:#FFFFFF;
-    --ink:#16324F;
-    --ink-soft:#64748B;
+    /* طاولة الطباعة: كحلي معاذ + ورق الاستيكر + رمادي الكاونتر */
     --navy:#16324F;
-    --navy-dark:#0F2438;
-    --border-dash:#D7DEE7;
-    --pill-bg:#EEF1F5;
-    --pill-text:#6B7280;
-    --danger:#C0392B;
-    --font:"Tajawal","Tahoma",sans-serif;
+    --navy-dark:#0E2236;
+    --ink:#16324F;
+    --ink-soft:#5B6B7F;
+    --counter:#E6EBF0;
+    --roll:#D5DDE6;
+    --paper:#FFFFFF;
+    --rule:#C9D3DE;
+    --ready:#17805A;
+    --ready-dark:#11654A;
+    --amber:#A8650F;
+    --danger:#B42318;
+    --pill-bg:#EEF2F6;
+    --border-dash:#C9D3DE;
+    --font:"Almarai","Tajawal","Tahoma",sans-serif;
   }
   *{box-sizing:border-box;}
+  html,body{margin:0;}
   body{
-    font-family: var(--font);
-    background:var(--bg);
-    margin:0;
-    padding:0;
-    direction:rtl;
-    color:var(--ink);
-  }
-
-  .masthead{
-    text-align:center;
-    padding:34px 20px 8px 20px;
-  }
-  .masthead h1{
-    font-weight:800;
-    font-size:22px;
-    margin:0 0 8px 0;
-    color:var(--ink);
-  }
-  .masthead .sub{
-    font-size:13.5px;
-    color:var(--ink-soft);
-    margin:0 auto 10px auto;
-    max-width:620px;
-    line-height:1.7;
-  }
-  .masthead .attribution{
-    font-size:12.5px;
-    color:#8B95A3;
-    margin:0 0 26px 0;
-  }
-
-  .wrap{
-    max-width:900px;
-    margin:0 auto;
-    padding:0 20px 48px 20px;
-  }
-
-  .panel{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:16px;
-  }
-  @media (max-width:600px){
-    .panel{grid-template-columns:1fr;}
-  }
-
-  .card{
-    background:var(--surface);
-    border:1.5px dashed var(--border-dash);
-    border-radius:14px;
-    padding:22px 24px;
-    box-shadow:0 1px 3px rgba(22,50,79,.04);
-  }
-  .card-head{
-    text-align:center;
-    margin-bottom:16px;
-  }
-  .card-icon{font-size:26px; line-height:1; margin-bottom:8px;}
-  .card-title{font-weight:700; font-size:15px; color:var(--ink); margin:0 0 3px 0;}
-  .card-desc{font-size:12.5px; color:var(--ink-soft); margin:0;}
-  .card-desc b{color:var(--ink); font-weight:700;}
-
-  .row{
-    display:flex;
-    flex-wrap:wrap;
-    gap:16px;
-    align-items:flex-end;
-    justify-content:center;
-  }
-  .field{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--ink-soft);align-items:flex-start;}
-  .field span{font-weight:600;color:var(--ink);font-size:12.5px;}
-  .field input[type=number], .field input[type=text], .field select{
-    padding:8px 10px;border:1px solid var(--border-dash);border-radius:8px;width:96px;
-    font-size:13.5px;color:var(--ink);background:#FAFBFC;
-  }
-  .field input[type=number]:focus, .field input[type=text]:focus, .field select:focus{
-    outline:none; border-color:var(--navy); box-shadow:0 0 0 3px rgba(22,50,79,.10);
-  }
-  label.chk{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink);font-weight:600;cursor:pointer;}
-  label.chk input{accent-color:var(--navy);}
-  input[type=file]{
-    padding:10px;border:1px solid var(--border-dash);border-radius:8px;background:#FAFBFC;font-size:13.5px;flex:1;min-width:220px;
-    color:var(--ink-soft);
-  }
-  .pill{
-    display:inline-block;
-    background:var(--pill-bg);
-    color:var(--pill-text);
-    font-size:12px;
-    padding:5px 14px;
-    border-radius:999px;
-  }
-  .file-btn{
-    display:inline-block;
-    background:var(--navy);color:#fff;border:none;border-radius:9px;
-    padding:10px 22px;font-size:14px;font-family:var(--font);font-weight:700;cursor:pointer;
-  }
-  .file-btn:hover{background:var(--navy-dark);}
-  button{
-    background:var(--navy);color:#fff;border:none;border-radius:9px;
-    padding:10px 22px;font-size:14px;font-family:var(--font);font-weight:700;cursor:pointer;
-  }
-  button:hover:not(:disabled){background:var(--navy-dark);}
-  button:disabled{background:#C7CDD6;cursor:not-allowed;}
-  button.secondary{background:#8C97A6;}
-  button.secondary:hover:not(:disabled){background:#76818F;}
-  #printBtn{background:#C0392B;}
-  #printBtn:hover:not(:disabled){background:#A5301F;}
-  .status{font-size:14px;color:#C0392B;font-weight:700;margin-top:2px;text-align:center;}
-  .status.err{color:var(--danger);}
-
-.combo{
-    position:relative;
-    width:260px;
-  }
-  .combo input{
-    width:100%;
-    padding:8px 10px;
-    border:1px solid var(--border-dash);
-    border-radius:8px;
-    font-size:13.5px;
     font-family:var(--font);
+    background:var(--counter);
     color:var(--ink);
-    background:#FAFBFC;
+    font-size:14px;
+    line-height:1.5;
+    min-height:100vh;
   }
-  .combo input:focus{
-    outline:none;
-    border-color:var(--navy);
-    box-shadow:0 0 0 3px rgba(22,50,79,.10);
-  }
-  .combo-list{
-    position:absolute;
-    top:calc(100% + 4px);
-    right:0;
-    left:0;
-    background:#fff;
-    border:1px solid var(--border-dash);
-    border-radius:8px;
-    box-shadow:0 6px 18px rgba(22,50,79,.16);
-    max-height:260px;
-    overflow-y:auto;
-    z-index:60;
-  }
-  .combo-list .opt{
-    padding:8px 12px;
-    font-size:13.5px;
-    color:var(--ink);
-    cursor:pointer;
-    border-bottom:1px solid #F1F5F9;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-  }
-  .combo-list .opt:last-child{border-bottom:none;}
-  .combo-list .opt:hover,
-  .combo-list .opt.hl{background:var(--pill-bg);}
-  .combo-list .opt small{color:var(--ink-soft); font-size:12px;}
-  .combo-list .empty{
-    padding:10px 12px;
-    color:var(--ink-soft);
-    font-size:13px;
-  }
+  button, input, select{font-family:var(--font);}
+  :focus-visible{outline:3px solid rgba(22,50,79,.35);outline-offset:2px;}
 
-  .toolbar{
-    display:flex;gap:12px;flex-wrap:wrap;justify-content:center;
-    align-items:center;
-    background:var(--surface);
-    border:1.5px dashed var(--border-dash);
-    border-radius:14px;
-    padding:16px 20px;
-  }
-  .field.inline{flex-direction:row;align-items:center;gap:8px;}
-  .field.inline select{width:180px;}
-  .field.inline > span{white-space:nowrap;}
-  .divider{width:1px;align-self:stretch;background:var(--border-dash);margin:0 6px;}
-
-  /* ---- collapsible card ---- */
-  details.card > summary.card-head{
-    position:relative;
-    display:block;
-    text-align:center;
-    margin-bottom:0;
-    cursor:pointer;
-    list-style:none;
-    user-select:none;
-  }
-  details.card > summary.card-head::-webkit-details-marker{display:none;}
-  details.card > summary.card-head .card-icon{
-    margin:0 auto 8px auto;
-    transition:margin .15s ease;
-  }
-  details.card > summary.card-head .card-title{margin:0;}
-  details.card > summary.card-head .chev{
-    position:absolute;
-    inset-inline-end:0;
-    top:4px;
-    width:26px;height:26px;
-    display:flex;align-items:center;justify-content:center;
-    border-radius:8px;
-    background:var(--pill-bg);
-    color:var(--ink-soft);
-    font-size:12px;
-    line-height:1;
-    transition:transform .2s ease, background .2s ease;
-  }
-  details.card > summary.card-head:hover .chev{background:#E2E8F0;}
-  details.card[open] > summary.card-head{margin-bottom:16px;}
-  details.card[open] > summary.card-head .chev{transform:rotate(180deg);}
-
-  /* ---- professional barcode scanner card ---- */
-  .scan-card{
-    background:linear-gradient(180deg,#FFFFFF 0%,#F5F9FF 100%);
-    border:1.5px solid #C6D6EC;
-    box-shadow:0 3px 14px rgba(22,50,79,.07);
-    padding:20px 22px;
-  }
-  .scan-head{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
-  .scan-head .scan-icon{
-    width:44px;height:44px;flex:0 0 auto;
-    border-radius:12px;
+  /* ---------- الشريط العلوي ---------- */
+  .masthead{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    padding:12px 24px;
     background:var(--navy);
     color:#fff;
-    display:flex;align-items:center;justify-content:center;
-    font-size:21px;
   }
-  .scan-head .card-title{margin:0 0 3px 0;font-size:15.5px;}
-  .scan-head .card-desc{margin:0;text-align:right;font-size:12.5px;line-height:1.6;}
-  .scan-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;}
-  /* ربط باركود مش موجود في ملف المخزون بصنف */
-  .links-info{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:4px;font-size:12px;color:var(--ink-soft);text-align:center;}
-  .links-info button{padding:6px 12px;font-size:12px;}
-  .link-panel{margin-top:14px;padding:14px;border:1.5px dashed #E0B15A;border-radius:10px;background:#FFFBF2;}
-  .link-panel .link-msg{margin:0 0 10px;font-size:13px;color:#7A4B00;line-height:1.7;}
-  .link-panel input{width:100%;padding:10px 12px;border:1.5px solid #E0C48F;border-radius:8px;font:600 14px var(--font);background:#fff;}
-  .link-results{margin-top:8px;max-height:260px;overflow:auto;display:flex;flex-direction:column;gap:4px;}
-  .link-results .lr{display:flex;justify-content:space-between;gap:10px;align-items:center;text-align:right;
-    padding:8px 10px;border:1px solid #EADBBE;border-radius:8px;background:#fff;cursor:pointer;font:13px var(--font);color:var(--ink);}
-  .link-results .lr:hover,.link-results .lr.hl{border-color:var(--navy);background:#F2F6FC;}
-  .link-results .lr small{color:var(--ink-soft);white-space:nowrap;direction:ltr;}
-  .link-results .empty{font-size:12.5px;color:var(--ink-soft);padding:6px 2px;}
-  .scan-input-wrap{position:relative;flex:1 1 320px;min-width:240px;display:flex;align-items:center;}
-  .scan-input-wrap .scan-ic{
-    position:absolute;right:13px;display:flex;align-items:center;
-    color:var(--ink-soft);pointer-events:none;
+  .brand{display:flex;align-items:baseline;gap:10px;}
+  .brand h1{margin:0;font-size:19px;font-weight:800;letter-spacing:0;}
+  .brand span{font-size:13px;color:#AFC2D6;}
+  .stock{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .stock-chip{
+    display:flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.16);
+    border-radius:8px;
+    padding:6px 12px;
+    font-size:13px;color:#DCE6F0;
   }
+  .stock-chip::before{content:"";width:8px;height:8px;border-radius:50%;background:#7C8DA0;flex:0 0 auto;}
+  .stock-chip.ok::before{background:#4ADE9B;}
+  .stock-chip .sep{width:1px;height:14px;background:rgba(255,255,255,.25);}
+  .file-btn{
+    display:inline-flex;align-items:center;
+    background:#fff;color:var(--navy);
+    border-radius:8px;padding:7px 16px;
+    font-size:13.5px;font-weight:800;cursor:pointer;
+  }
+  .file-btn:hover{background:#E7EEF6;}
+  .pill{display:none;}   /* اسم الملف بقى في شريحة المخزون */
+
+  /* ---------- التخطيط ---------- */
+  .wrap{
+    display:grid;
+    grid-template-columns:minmax(320px,400px) 1fr;
+    gap:0;
+    min-height:calc(100vh - 58px);
+  }
+  .panel{
+    background:var(--paper);
+    border-inline-end:1px solid var(--rule);
+    padding:22px 22px 28px;
+    display:flex;flex-direction:column;gap:18px;
+  }
+  .section-title{margin:0 0 8px;font-size:13px;font-weight:700;color:var(--ink-soft);}
+
+  /* ---------- المسح ---------- */
+  .scan-box{display:flex;flex-direction:column;gap:10px;}
+  .scan-input-wrap{position:relative;display:flex;align-items:center;}
+  .scan-input-wrap .scan-ic{position:absolute;right:14px;display:flex;color:var(--ink-soft);pointer-events:none;}
   .scan-input-wrap input{
     width:100%;
-    padding:12px 44px 12px 14px;
-    border:1.5px solid var(--border-dash);
+    padding:15px 46px 15px 14px;
+    border:2px solid var(--navy);
     border-radius:10px;
-    font-size:15px;
-    font-family:var(--font);
-    font-weight:600;
-    color:var(--ink);
+    font-size:18px;font-weight:700;color:var(--ink);
     background:#fff;
   }
-  .scan-input-wrap input::placeholder{font-weight:400;color:#9AA6B4;}
-  .scan-input-wrap input:focus{
-    outline:none;
-    border-color:var(--navy);
-    box-shadow:0 0 0 3px rgba(22,50,79,.12);
-  }
-  #scanBtn{padding:12px 26px;font-size:14.5px;}
+  .scan-input-wrap input::placeholder{font-weight:400;font-size:15px;color:#8E9BAB;}
+  .scan-input-wrap input:focus{outline:none;box-shadow:0 0 0 4px rgba(22,50,79,.14);}
+  .scan-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
 
-  /* ---- toggle switch ---- */
-  .switch{
-    display:flex;align-items:center;gap:10px;
-    cursor:pointer;font-size:13.5px;font-weight:600;color:var(--ink);
-    user-select:none;
+  button{
+    border:none;border-radius:8px;
+    background:var(--navy);color:#fff;
+    padding:10px 18px;
+    font-size:14px;font-weight:700;cursor:pointer;
   }
+  button:hover:not(:disabled){background:var(--navy-dark);}
+  button:disabled{background:#C3CCD6;color:#F4F6F8;cursor:not-allowed;}
+  button.secondary{background:var(--pill-bg);color:var(--ink);}
+  button.secondary:hover:not(:disabled){background:#DEE5EC;}
+  #printBtn{background:var(--ready);width:100%;padding:13px;font-size:16px;}
+  #printBtn:hover:not(:disabled){background:var(--ready-dark);}
+  #printBtn:disabled{background:#C3CCD6;}
+
+  .switch{display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none;}
   .switch input{position:absolute;opacity:0;width:0;height:0;}
-  .switch-track{
-    position:relative;flex:0 0 auto;
-    width:44px;height:24px;border-radius:999px;
-    background:#CFD6DF;transition:background .2s ease;
-  }
-  .switch-dot{
-    position:absolute;top:3px;right:3px;
-    width:18px;height:18px;border-radius:50%;
-    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);
-    transition:transform .2s ease;
-  }
-  .switch input:checked + .switch-track{background:var(--navy);}
-  .switch input:checked + .switch-track .switch-dot{transform:translateX(-20px);}
-  .switch input:focus-visible + .switch-track{box-shadow:0 0 0 3px rgba(22,50,79,.18);}
+  .switch-track{position:relative;width:42px;height:24px;border-radius:999px;background:#C3CCD6;transition:background .15s;}
+  .switch-dot{position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .15s;}
+  .switch input:checked + .switch-track{background:var(--ready);}
+  .switch input:checked + .switch-track .switch-dot{transform:translateX(-18px);}
+  .switch input:focus-visible + .switch-track{box-shadow:0 0 0 3px rgba(22,50,79,.25);}
+  .switch-label{font-size:13.5px;font-weight:700;}
 
+  .status{font-size:13px;font-weight:700;color:var(--ink-soft);line-height:1.7;min-height:1.7em;}
+  .status.err{color:var(--danger);}
+
+  /* ربط باركود مش موجود في ملف المخزون بصنف */
+  .link-panel{padding:14px;border-radius:10px;background:#FFF6E6;border:1px solid #EBC98A;}
+  .link-panel .link-msg{margin:0 0 10px;font-size:13px;color:#6E4206;line-height:1.75;}
+  .link-panel input{width:100%;padding:10px 12px;border:1.5px solid #DDB56B;border-radius:8px;font-size:14px;font-weight:700;background:#fff;}
+  .link-results{margin-top:8px;max-height:260px;overflow:auto;display:flex;flex-direction:column;gap:4px;}
+  .link-results .lr{display:flex;justify-content:space-between;gap:10px;align-items:center;text-align:right;
+    padding:9px 10px;border:1px solid #EBDDBF;border-radius:8px;background:#fff;cursor:pointer;font-size:13px;color:var(--ink);}
+  .link-results .lr:hover,.link-results .lr.hl{border-color:var(--navy);background:#F2F6FA;}
+  .link-results .lr small{color:var(--ink-soft);white-space:nowrap;direction:ltr;}
+  .link-results .empty{font-size:12.5px;color:var(--ink-soft);padding:6px 2px;}
+
+  /* ---------- تصفح الأصناف ---------- */
+  .browse{border-top:1px solid var(--rule);padding-top:18px;display:flex;flex-direction:column;gap:10px;}
+  .browse-row{display:flex;gap:8px;align-items:center;}
+  .browse-row select{flex:1;}
+  .field{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--ink-soft);}
+  .field span{font-weight:700;color:var(--ink);font-size:12.5px;}
+  .field input[type=number], .field input[type=text], .field select, .browse select{
+    padding:9px 10px;border:1px solid var(--rule);border-radius:8px;font-size:14px;color:var(--ink);background:#fff;
+  }
+  .field input:focus, .field select:focus, .browse select:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(22,50,79,.12);}
+  .chk{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink);cursor:pointer;}
+
+  .combo{position:relative;width:100%;}
+  .combo input{width:100%;padding:9px 10px;border:1px solid var(--rule);border-radius:8px;font-size:14px;color:var(--ink);background:#fff;}
+  .combo input:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(22,50,79,.12);}
+  .combo-list{position:absolute;top:calc(100% + 4px);right:0;left:0;background:#fff;border:1px solid var(--rule);border-radius:8px;
+    box-shadow:0 8px 20px rgba(22,50,79,.16);max-height:260px;overflow-y:auto;z-index:60;}
+  .combo-list .opt{padding:8px 12px;font-size:13.5px;color:var(--ink);cursor:pointer;border-bottom:1px solid #F1F4F7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .combo-list .opt:last-child{border-bottom:none;}
+  .combo-list .opt:hover, .combo-list .opt.hl{background:var(--pill-bg);}
+  .combo-list .opt small{color:var(--ink-soft);font-size:12px;}
+  .combo-list .empty{padding:10px 12px;color:var(--ink-soft);font-size:13px;}
+
+  /* ---------- الإعدادات ---------- */
+  details.settings{border-top:1px solid var(--rule);padding-top:14px;}
+  details.settings > summary{cursor:pointer;list-style:none;font-size:13.5px;font-weight:700;color:var(--ink-soft);display:flex;align-items:center;gap:8px;}
+  details.settings > summary::-webkit-details-marker{display:none;}
+  details.settings > summary::before{content:"";width:7px;height:7px;border-inline-start:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);transition:transform .15s;}
+  details.settings[open] > summary::before{transform:rotate(-135deg) translate(-2px,-2px);}
+  details.settings .row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;}
+  details.settings .row .field:has(.chk){grid-column:1 / -1;}
+  .links-info{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--rule);padding-top:14px;font-size:12.5px;color:var(--ink-soft);}
+  .links-info button{padding:6px 12px;font-size:12.5px;flex:0 0 auto;}
+
+  /* ---------- رول الاستيكرات (المعاينة) ---------- */
   .preview-tray{
-    margin-top:6px;
-    padding:26px 18px;
-    background:var(--surface);
-    border:1.5px dashed var(--border-dash);
-    border-radius:14px;
+    background:var(--roll);
+    padding:28px 24px 40px;
+    display:flex;flex-direction:column;align-items:center;gap:16px;
+    min-width:0;
+  }
+  .select-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;}
+  .select-bar button{padding:7px 14px;font-size:13px;}
+  .select-bar .pill{display:inline-block;background:#fff;color:var(--ink);font-size:12.5px;font-weight:700;padding:5px 12px;border-radius:999px;}
+  #sheet:empty{
+    display:flex;align-items:center;justify-content:center;
+    width:min(100%, 520px);min-height:260px;
+    border:2px dashed #AEBCCB;border-radius:6px;
+    color:var(--ink-soft);font-size:15px;font-weight:700;text-align:center;padding:24px;
+  }
+  #sheet:empty::before{content:"امسح باركود صنف علشان تظهر بطاقته هنا";}
+  @media screen{
+    /* صنف واحد (مسح باركود): البطاقة تظهر كبيرة زي ما هتتطبع بالظبط، بس مكبّرة */
+    #sheet.single .tag{zoom:1.9;}
+    #sheet.single .tag .select-box, #sheet.single .tag .quick-print{display:none;}
+    /* أكتر من صنف: شبكة بدل عمود طويل */
+    #sheet.receipt-mode:not(.single){flex-direction:row;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:14px;max-width:100%;}
   }
 
-  .select-bar{
-    display:flex;
-    gap:10px;
-    align-items:center;
-    justify-content:center;
-    flex-wrap:wrap;
-    margin-bottom:16px;
+  @media screen and (max-width:900px){
+    .wrap{grid-template-columns:1fr;}
+    .panel{border-inline-end:none;border-bottom:1px solid var(--rule);}
+    #sheet.single .tag{zoom:1.35;}
   }
-  .select-bar .pill{font-size:12px; font-weight:700;}
+  @media screen and (max-width:600px){
+    .masthead{padding:12px 16px;}
+    .panel{padding:18px 16px;}
+    .preview-tray{padding:20px 16px 32px;}
+    #sheet.single .tag{zoom:1.15;}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
 
   .tag .select-box{
     position:absolute;
@@ -454,7 +336,9 @@
     .masthead, .panel, .no-print{display:none !important;}
     .select-bar, .tag .select-box, .tag .quick-print, .tag .vat-toggle{display:none !important;}
     .tag.unselected{display:none !important;}
-    .wrap{padding:0; max-width:none;}
+    .wrap{padding:0; max-width:none; display:block; min-height:0;}
+    body{min-height:0;}
+    .preview-tray{display:block;}
     .preview-tray{background:none;border:none;padding:0;border-radius:0;margin:0;}
     #sheet{gap:0mm; max-width:none;}
     #sheet.receipt-mode{display:block;}
@@ -481,66 +365,67 @@
 <body>
 
 <header class="masthead no-print">
-  <h1>🏷️ طباعة بطاقات التسعير</h1>
-  <p class="sub">ارفع ملف الإكسيل أو أدخل صنف يدويًا، والأداة تولّد بطاقات تسعير بنفس شكل وأبعاد نموذج الطباعة</p>
-  <p class="attribution">د. يحي زقزوق — صيدلية معاذ</p>
+  <div class="brand">
+    <h1>بطاقات التسعير</h1>
+    <span>صيدلية معاذ</span>
+  </div>
+  <div class="stock">
+    <div class="stock-chip" id="stockChip">لسه ما اترفعش ملف مخزون</div>
+    <span class="pill" id="fileStatusPill"></span>
+    <label for="fileInput" class="file-btn">رفع ملف المخزون</label>
+    <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" hidden>
+  </div>
 </header>
 
 <div class="wrap">
 <div class="panel no-print">
 
-  <div class="card scan-card" style="grid-column:1 / -1;">
-    <div class="scan-head">
-      <div class="scan-icon">🔍</div>
-      <div>
-        <p class="card-title">مسح الباركود</p>
-        <p class="card-desc">امسح الباركود أو اكتب الكود ثم اضغط Enter — يظهر الاستيكر جاهزًا للطباعة</p>
-      </div>
+  <div class="scan-box">
+    <div class="scan-input-wrap">
+      <span class="scan-ic" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 5v14M7 5v14M10 5v14M14 5v14M17 5v14M21 5v14"/></svg>
+      </span>
+      <input type="text" id="barcodeSearch" placeholder="امسح الباركود أو اكتب اسم الصنف" autocomplete="off" aria-label="الباركود أو اسم الصنف">
     </div>
-    <div class="scan-row">
-      <div class="scan-input-wrap">
-        <span class="scan-ic" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 5v14M7 5v14M10 5v14M14 5v14M17 5v14M21 5v14"/></svg>
-        </span>
-        <input type="text" id="barcodeSearch" placeholder="امسح الباركود أو اكتب اسم الصنف…" autocomplete="off">
-      </div>
-      <button type="button" id="scanBtn">عرض الاستيكر</button>
+    <div class="scan-actions">
       <label class="switch">
         <input type="checkbox" id="autoPrint">
         <span class="switch-track"><span class="switch-dot"></span></span>
-        <span class="switch-label">طباعة تلقائية بعد المسح</span>
+        <span class="switch-label">اطبع على طول بعد المسح</span>
       </label>
+      <button type="button" id="scanBtn">اعرض البطاقة</button>
     </div>
     <div class="link-panel" id="linkPanel" hidden>
       <p class="link-msg" id="linkMsg"></p>
-      <input type="text" id="linkSearch" placeholder="اكتب اسم الصنف أو الكود…" autocomplete="off">
+      <input type="text" id="linkSearch" placeholder="اكتب اسم الصنف أو الكود" autocomplete="off">
       <div class="link-results" id="linkResults"></div>
     </div>
+    <div class="status" id="status"></div>
   </div>
 
-  <div class="card">
-    <div class="card-head">
-      <div class="card-icon">📄</div>
-      <p class="card-title">مخزون الفرع</p>
-      <p class="card-desc">ارفع تقرير المخزون من جوليب (User Stock Report) — بيتحفظ لحد ما ترفع ملف أحدث</p>
+  <button id="printBtn" disabled>طباعة</button>
+
+  <div class="browse">
+    <p class="section-title">تصفح الأصناف</p>
+    <div class="browse-row">
+      <select id="catFilter" aria-label="فئة المنتج"><option value="">كل الفئات</option></select>
+      <button id="renderBtn" class="secondary" disabled>اعرض البطاقات</button>
     </div>
-    <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
-      <span class="pill" id="fileStatusPill">لم يُرفع بعد</span>
-      <label for="fileInput" class="file-btn">رفع ملف المخزون</label>
-      <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display:none;">
-      <div class="links-info" id="linksInfo">
-        <span id="linksCount">باركودات مربوطة: 0</span>
-        <button type="button" id="exportLinksBtn" class="secondary" disabled>تصدير ملف الربط</button>
+    <div class="field" style="display:none;">
+      <div class="combo" id="supCombo">
+        <input type="text" id="supSearch" placeholder="اكتب اسم المورد" autocomplete="off" aria-label="المورد">
+        <div class="combo-list" id="supList" hidden></div>
       </div>
     </div>
   </div>
 
-  <details class="card">
-    <summary class="card-head">
-      <div class="card-icon">📐</div>
-      <p class="card-title">أبعاد البطاقة والضريبة</p>
-      <span class="chev">▾</span>
-    </summary>
+  <div class="links-info" id="linksInfo">
+      <span id="linksCount">باركودات مربوطة: 0</span>
+      <button type="button" id="exportLinksBtn" class="secondary" disabled>تصدير ملف الربط</button>
+  </div>
+
+  <details class="settings">
+    <summary>إعدادات البطاقة والضريبة</summary>
     <div class="row">
       <div class="field">
         <span>عرض البطاقة (مم)</span>
@@ -630,29 +515,11 @@
       <button id="clearAllBtn" type="button" class="secondary">امسح الأصناف اليدوية</button>
     </div>
   </details>
-
-  <div class="toolbar" style="grid-column:1 / -1;">
-    <button id="renderBtn" disabled>عرض البطاقات</button>
-    <button id="printBtn" class="secondary" disabled>طباعة</button>
-    <span class="divider"></span>
-    <div class="field inline">
-      <span>فئة المنتج</span>
-      <select id="catFilter"></select>
-    </div>
-    <div class="field inline">
-      <span>المورد</span>
-      <div class="combo" id="supCombo">
-        <input type="text" id="supSearch" placeholder="اكتب اسم المورد…" autocomplete="off">
-        <div class="combo-list" id="supList" hidden></div>
-      </div>
-    </div>
-  </div>
-  <div class="status" id="status" style="grid-column:1 / -1;">لم يتم رفع ملف بعد.</div>
 </div>
 
 <div class="preview-tray">
   <div class="select-bar no-print" id="selectBar" style="display:none;">
-    <button type="button" id="selectAllBtn">تحديد الكل</button>
+    <button type="button" id="selectAllBtn" class="secondary">تحديد الكل</button>
     <button type="button" id="selectNoneBtn" class="secondary">إلغاء التحديد</button>
     <span class="pill" id="selectedCount">0 / 0</span>
   </div>
@@ -812,6 +679,12 @@ function clearScanView(){
 function runScan(){
   const t = barcodeSearch.value.trim();
   if(!t){ clearScanView(); return; }
+  if(!rows.length){
+    statusEl.className = 'status err';
+    statusEl.textContent = 'ارفع ملف مخزون الفرع الأول من زرار «رفع ملف المخزون» فوق.';
+    barcodeSearch.select();
+    return;
+  }
   scanMode = { active:true, term:t };
   manualView = false;
   hideLinkPanel();
@@ -1069,6 +942,11 @@ function applyStock(list, meta){
   statusEl.className = 'status';
   statusEl.textContent = `مخزون الفرع جاهز: ${rows.length} صنف (${withBarcode} بباركود)${info ? ' — ' + info : ''}. امسح الباركود أو اختر فلتر.`;
   fileStatusPill.textContent = meta.file || 'مخزون الفرع';
+  const chip = document.getElementById('stockChip');
+  chip.innerHTML = [meta.branch, `${rows.length.toLocaleString('en-US')} صنف`, meta.reportTime ? `تقرير ${meta.reportTime}` : '']
+    .filter(Boolean).map(x => `<bdi>${escapeHtml(x)}</bdi>`).join('<span class="sep"></span>');
+  chip.title = meta.file || '';
+  chip.classList.add('ok');
   barcodeSearch.focus();
 }
 
@@ -1312,7 +1190,8 @@ function render(){
     sheetEl.appendChild(tag);
   });
 
-  selectBar.style.display = list.length ? 'flex' : 'none';
+  sheetEl.classList.toggle('single', list.length === 1);
+  selectBar.style.display = list.length > 1 ? 'flex' : 'none';
   updateSelectCount();
   printBtn.disabled = list.length === 0;
   const parts = [];
