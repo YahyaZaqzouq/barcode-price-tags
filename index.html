@@ -255,6 +255,16 @@
   .scan-head .card-title{margin:0 0 3px 0;font-size:15.5px;}
   .scan-head .card-desc{margin:0;text-align:right;font-size:12.5px;line-height:1.6;}
   .scan-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;}
+  /* ربط باركود مش موجود في ملف المخزون بصنف */
+  .link-panel{margin-top:14px;padding:14px;border:1.5px dashed #E0B15A;border-radius:10px;background:#FFFBF2;}
+  .link-panel .link-msg{margin:0 0 10px;font-size:13px;color:#7A4B00;line-height:1.7;}
+  .link-panel input{width:100%;padding:10px 12px;border:1.5px solid #E0C48F;border-radius:8px;font:600 14px var(--font);background:#fff;}
+  .link-results{margin-top:8px;max-height:260px;overflow:auto;display:flex;flex-direction:column;gap:4px;}
+  .link-results .lr{display:flex;justify-content:space-between;gap:10px;align-items:center;text-align:right;
+    padding:8px 10px;border:1px solid #EADBBE;border-radius:8px;background:#fff;cursor:pointer;font:13px var(--font);color:var(--ink);}
+  .link-results .lr:hover,.link-results .lr.hl{border-color:var(--navy);background:#F2F6FC;}
+  .link-results .lr small{color:var(--ink-soft);white-space:nowrap;direction:ltr;}
+  .link-results .empty{font-size:12.5px;color:var(--ink-soft);padding:6px 2px;}
   .scan-input-wrap{position:relative;flex:1 1 320px;min-width:240px;display:flex;align-items:center;}
   .scan-input-wrap .scan-ic{
     position:absolute;right:13px;display:flex;align-items:center;
@@ -489,7 +499,7 @@
         <span class="scan-ic" aria-hidden="true">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 5v14M7 5v14M10 5v14M14 5v14M17 5v14M21 5v14"/></svg>
         </span>
-        <input type="text" id="barcodeSearch" placeholder="امسح الباركود هنا…" autocomplete="off">
+        <input type="text" id="barcodeSearch" placeholder="امسح الباركود أو اكتب اسم الصنف…" autocomplete="off">
       </div>
       <button type="button" id="scanBtn">عرض الاستيكر</button>
       <label class="switch">
@@ -497,6 +507,11 @@
         <span class="switch-track"><span class="switch-dot"></span></span>
         <span class="switch-label">طباعة تلقائية بعد المسح</span>
       </label>
+    </div>
+    <div class="link-panel" id="linkPanel" hidden>
+      <p class="link-msg" id="linkMsg"></p>
+      <input type="text" id="linkSearch" placeholder="اكتب اسم الصنف أو الكود…" autocomplete="off">
+      <div class="link-results" id="linkResults"></div>
     </div>
   </div>
 
@@ -692,15 +707,45 @@ function gtinKey(v){
   return digits.replace(/^0+/,'');
 }
 
+// ---------- باركودات مربوطة يدويًا ----------
+// جوليب ممكن يسجل للصنف أكتر من باركود، وتقرير المخزون بيطلّع الأساسي بس.
+// الباركود اللي مش في الملف تربطه بالصنف مرة، ويتحفظ هنا: { مفتاح الباركود: كود الصنف }
+const LINKS_KEY = 'priceTagBarcodeLinks';
+let barcodeLinks = {};
+try{ barcodeLinks = JSON.parse(localStorage.getItem(LINKS_KEY) || '{}') || {}; }catch(err){ barcodeLinks = {}; }
+function linkKey(v){ return gtinKey(v) || String(v||'').replace(/\s+/g,''); }
+function saveLink(scanned, code){
+  barcodeLinks[linkKey(scanned)] = normCode(code);
+  try{ localStorage.setItem(LINKS_KEY, JSON.stringify(barcodeLinks)); }catch(err){}
+}
+
+// توحيد الحروف العربية للبحث بالاسم (أ/إ/آ = ا، ة = ه، ى = ي)
+function normAr(v){
+  return String(v||'').toLowerCase()
+    .replace(/[ًٌٍَُِّْـ]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي')
+    .replace(/\s+/g,' ').trim();
+}
+function isCodeLike(t){ return /^[\d\s\x1d\]a-zA-Z]+$/.test(t) && /\d{4,}/.test(t); }
+function nameMatches(r, words){
+  const n = r._n || (r._n = normAr(r.name));
+  return words.every(w => n.includes(w));
+}
+
 function matchesScan(r){
   const t = scanMode.term;
   if(!t) return true;
+  if(!isCodeLike(t)){
+    // بحث بالاسم: كل الكلمات لازم تكون موجودة في اسم الصنف
+    return nameMatches(r, normAr(t).split(' ').filter(Boolean));
+  }
   const bc = String(r.barcode||'').trim();
   const cd = String(r.code||'').trim();
   if(bc === t || cd === t) return true;
   if(cd && normCode(cd) === normCode(t)) return true;
   const tk = gtinKey(t);
-  return !!(tk && tk.length >= 8 && r._gtin === tk);
+  if(tk && tk.length >= 8 && r._gtin === tk) return true;
+  const linked = barcodeLinks[linkKey(t)];
+  return !!(linked && cd && normCode(cd) === linked);
 }
 
 function clearScanView(){
@@ -715,17 +760,92 @@ function runScan(){
   if(!t){ clearScanView(); return; }
   scanMode = { active:true, term:t };
   manualView = false;
+  hideLinkPanel();
   render();
   const found = sheetEl.querySelectorAll('.tag').length;
-  if(found > 0 && autoPrintChk.checked){
+  // الطباعة التلقائية لما يطلع صنف واحد بس (البحث بالاسم ممكن يطلّع كذا صنف)
+  if(found === 1 && autoPrintChk.checked){
     requestAnimationFrame(()=>requestAnimationFrame(()=>{
       window.print();
       setTimeout(()=>{ barcodeSearch.value=''; barcodeSearch.focus(); }, 120);
     }));
   }else if(found === 0){
-    barcodeSearch.select();
+    if(rows.length && isCodeLike(t)) showLinkPanel(t);
+    else barcodeSearch.select();
   }
 }
+
+// ---------- لوحة الربط: تظهر لما الباركود مش موجود ----------
+const linkPanel = document.getElementById('linkPanel');
+const linkMsg = document.getElementById('linkMsg');
+const linkSearch = document.getElementById('linkSearch');
+const linkResults = document.getElementById('linkResults');
+let linkTerm = '';
+let linkHl = -1;
+
+function showLinkPanel(scanned){
+  linkTerm = scanned;
+  linkMsg.innerHTML = `الباركود <b dir="ltr">${escapeHtml(scanned)}</b> مش موجود في ملف المخزون (ممكن يكون باركود إضافي في جوليب). دوّر على الصنف واختاره، والباركود هيتربط بيه من هنا ورايح.`;
+  linkSearch.value = '';
+  linkResults.innerHTML = '';
+  linkPanel.hidden = false;
+  linkSearch.focus();
+}
+function hideLinkPanel(){
+  linkPanel.hidden = true;
+  linkTerm = '';
+}
+function renderLinkResults(){
+  const q = linkSearch.value.trim();
+  linkHl = -1;
+  if(!q){ linkResults.innerHTML = ''; return; }
+  const words = normAr(q).split(' ').filter(Boolean);
+  const qc = normCode(q);
+  const hits = [];
+  for(const r of rows){
+    if(r.manual || !r.code) continue;
+    if(nameMatches(r, words) || (qc.length >= 3 && normCode(r.code).includes(qc))) hits.push(r);
+    if(hits.length >= 30) break;
+  }
+  linkResults.innerHTML = hits.length
+    ? hits.map((r,i) => `<div class="lr" data-i="${i}"><span>${escapeHtml(r.name)}</span><small>${escapeHtml(r.code)} · ${fmtPrice(r.price)}</small></div>`).join('')
+    : '<div class="empty">مفيش صنف بالاسم ده</div>';
+  linkResults._hits = hits;
+}
+function pickLink(r){
+  const scanned = linkTerm;
+  saveLink(scanned, r.code);
+  hideLinkPanel();
+  barcodeSearch.value = scanned;
+  runScan();
+  statusEl.className = 'status';
+  statusEl.textContent = `تم ربط الباركود ${scanned} بـ «${r.name}». المرة الجاية هيطلع على طول.`;
+}
+linkSearch.addEventListener('input', renderLinkResults);
+linkSearch.addEventListener('keydown', (e)=>{
+  const items = [...linkResults.querySelectorAll('.lr')];
+  if(e.key === 'ArrowDown' || e.key === 'ArrowUp'){
+    if(!items.length) return;
+    e.preventDefault();
+    linkHl = (linkHl + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length;
+    items.forEach((el,i) => el.classList.toggle('hl', i === linkHl));
+    items[linkHl].scrollIntoView({block:'nearest'});
+  }else if(e.key === 'Enter'){
+    e.preventDefault();
+    const hits = linkResults._hits || [];
+    const r = hits[linkHl >= 0 ? linkHl : (hits.length === 1 ? 0 : -1)];
+    if(r) pickLink(r);
+  }else if(e.key === 'Escape'){
+    hideLinkPanel();
+    barcodeSearch.focus();
+  }
+});
+linkResults.addEventListener('click', (e)=>{
+  const el = e.target.closest('.lr');
+  if(!el) return;
+  const r = (linkResults._hits || [])[+el.dataset.i];
+  if(r) pickLink(r);
+});
 
 // قائمة الفئات تتبني من عمود Category في ملف المخزون المرفوع
 function populateCategories(){
@@ -1138,7 +1258,7 @@ function render(){
   updateSelectCount();
   printBtn.disabled = list.length === 0;
   const parts = [];
-  if(scanMode.active) parts.push(`باركود "${scanMode.term}"`);
+  if(scanMode.active) parts.push(isCodeLike(scanMode.term) ? `باركود "${scanMode.term}"` : `بحث "${scanMode.term}"`);
   if(catFilter.value) parts.push(`فئة "${catFilter.value}"`);
   if(supplierSel) parts.push(`مورد "${supplierSel}"`);
   if(parts.length){
@@ -1198,6 +1318,7 @@ function escapeHtml(s){
 
 function exitScan(){
   if(scanMode.active){ scanMode = { active:false, term:'' }; }
+  hideLinkPanel();
   manualView = false;
   barcodeSearch.value = '';
 }
