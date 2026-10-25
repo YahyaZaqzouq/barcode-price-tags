@@ -317,6 +317,7 @@
     text-decoration:underline;
   }
   .tag .price{direction:ltr;}
+  .tag .price .dec{font-size:0.68em;}
   .tag .price .cur{height:0.78em;width:auto;vertical-align:-0.02em;margin-right:0.18em;display:inline-block;}
   .tag .taxnote{
     font-size:0.67em;
@@ -1067,6 +1068,12 @@ document.addEventListener('click', (e)=>{
   if(!e.target.closest('#supCombo')) supList.hidden = true;
 });
 
+// الريالات بالحجم الكامل والهللات أصغر: 29.55 → 29 + .55
+function priceHtml(v){
+  const [i, d] = fmtPrice(v).split('.');
+  return `<span class="int">${i}</span><span class="dec">.${d}</span>`;
+}
+
 function fmtPrice(v){
   const n = parseFloat(v);
   if(isNaN(n)) return '0.00';
@@ -1142,7 +1149,7 @@ function render(){
     tag.innerHTML = `
       <div class="name">${escapeHtml(r.name)}</div>
       <div class="code">${escapeHtml(codeText)}</div>
-      <div class="price">${RIYAL_SVG}${fmtPrice(price)}</div>
+      <div class="price">${RIYAL_SVG}${priceHtml(price)}</div>
       <div class="taxnote">السعر شامل الضريبة</div>
     `;
 
@@ -1176,7 +1183,7 @@ function render(){
         vt.textContent = taxed ? `+${parseFloat(vatRate.value)||0}% ضريبة` : 'بدون ضريبة';
         vt.classList.toggle('off', !taxed);
         vt.title = taxed ? 'اضغط لو الصنف ده معفي من الضريبة' : 'اضغط لإضافة الضريبة على الصنف ده';
-        tag.querySelector('.price').innerHTML = `${RIYAL_SVG}${fmtPrice(computeDisplayPrice(r))}`;
+        tag.querySelector('.price').innerHTML = `${RIYAL_SVG}${priceHtml(computeDisplayPrice(r))}`;
       };
       vt.addEventListener('click', (ev)=>{
         ev.stopPropagation();
