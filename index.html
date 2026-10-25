@@ -785,7 +785,7 @@ let linkHl = -1;
 
 function showLinkPanel(scanned){
   linkTerm = scanned;
-  linkMsg.innerHTML = `الباركود <b dir="ltr">${escapeHtml(scanned)}</b> مش موجود في ملف المخزون (ممكن يكون باركود إضافي في جوليب). دوّر على الصنف واختاره، والباركود هيتربط بيه من هنا ورايح.`;
+  linkMsg.innerHTML = `الباركود <b dir="ltr">${escapeHtml(scanned)}</b> مش موجود في ملف المخزون (ممكن يكون باركود إضافي). دوّر على الصنف واختاره، والباركود هيتربط بيه من هنا ورايح.`;
   linkSearch.value = '';
   linkResults.innerHTML = '';
   linkPanel.hidden = false;
