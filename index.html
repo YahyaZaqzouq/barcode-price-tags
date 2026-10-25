@@ -256,6 +256,8 @@
   .scan-head .card-desc{margin:0;text-align:right;font-size:12.5px;line-height:1.6;}
   .scan-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;}
   /* ربط باركود مش موجود في ملف المخزون بصنف */
+  .links-info{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:4px;font-size:12px;color:var(--ink-soft);text-align:center;}
+  .links-info button{padding:6px 12px;font-size:12px;}
   .link-panel{margin-top:14px;padding:14px;border:1.5px dashed #E0B15A;border-radius:10px;background:#FFFBF2;}
   .link-panel .link-msg{margin:0 0 10px;font-size:13px;color:#7A4B00;line-height:1.7;}
   .link-panel input{width:100%;padding:10px 12px;border:1.5px solid #E0C48F;border-radius:8px;font:600 14px var(--font);background:#fff;}
@@ -525,6 +527,10 @@
       <span class="pill" id="fileStatusPill">لم يُرفع بعد</span>
       <label for="fileInput" class="file-btn">رفع ملف المخزون</label>
       <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display:none;">
+      <div class="links-info" id="linksInfo">
+        <span id="linksCount">باركودات مربوطة: 0</span>
+        <button type="button" id="exportLinksBtn" class="secondary" disabled>تصدير ملف الربط</button>
+      </div>
     </div>
   </div>
 
@@ -714,9 +720,55 @@ const LINKS_KEY = 'priceTagBarcodeLinks';
 let barcodeLinks = {};
 try{ barcodeLinks = JSON.parse(localStorage.getItem(LINKS_KEY) || '{}') || {}; }catch(err){ barcodeLinks = {}; }
 function linkKey(v){ return gtinKey(v) || String(v||'').replace(/\s+/g,''); }
-function saveLink(scanned, code){
-  barcodeLinks[linkKey(scanned)] = normCode(code);
+// الربط المشترك: ملف links.json في الريبو، بيتقري لكل الناس.
+// الربط الجديد بيتحفظ على الجهاز، وزرار "تصدير ملف الربط" بيطلّع ملف فيه الاتنين
+// علشان يترفع مكان links.json فيوصل لكل الأجهزة.
+let sharedLinks = {};
+function linkCodeOf(v){ return v && typeof v === 'object' ? normCode(v.code) : normCode(v); }
+function linkedCode(scanned){
+  const k = linkKey(scanned);
+  const v = barcodeLinks[k] !== undefined ? barcodeLinks[k] : sharedLinks[k];
+  return v ? linkCodeOf(v) : '';
+}
+function saveLink(scanned, r){
+  barcodeLinks[linkKey(scanned)] = { code: r.code, name: r.name };
   try{ localStorage.setItem(LINKS_KEY, JSON.stringify(barcodeLinks)); }catch(err){}
+  updateLinksInfo();
+}
+function newLocalLinks(){
+  return Object.keys(barcodeLinks).filter(k => linkCodeOf(sharedLinks[k]) !== linkCodeOf(barcodeLinks[k]));
+}
+function updateLinksInfo(){
+  const el = document.getElementById('linksInfo');
+  if(!el) return;
+  const total = new Set([...Object.keys(sharedLinks), ...Object.keys(barcodeLinks)]).size;
+  const fresh = newLocalLinks().length;
+  document.getElementById('linksCount').textContent = fresh
+    ? `باركودات مربوطة: ${total} — منها ${fresh} جديد على الجهاز ده لسه ما اترفعش`
+    : `باركودات مربوطة: ${total}`;
+  document.getElementById('exportLinksBtn').disabled = total === 0;
+}
+function exportLinks(){
+  const merged = {};
+  const keys = [...new Set([...Object.keys(sharedLinks), ...Object.keys(barcodeLinks)])].sort();
+  for(const k of keys){
+    const v = barcodeLinks[k] !== undefined ? barcodeLinks[k] : sharedLinks[k];
+    const code = v && typeof v === 'object' ? v.code : v;
+    const r = rows.find(x => x.code && normCode(x.code) === normCode(code));
+    merged[k] = { code: String(code), name: (v && v.name) || (r && r.name) || '' };
+  }
+  const blob = new Blob([JSON.stringify(merged, null, 2) + '\n'], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'links.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+}
+function loadSharedLinks(){
+  fetch('links.json', { cache: 'no-cache' })
+    .then(res => res.ok ? res.json() : {})
+    .then(data => { sharedLinks = (data && typeof data === 'object') ? data : {}; updateLinksInfo(); })
+    .catch(() => { updateLinksInfo(); });   // فاتح الملف من الجهاز من غير سيرفر: الربط المحلي بس
 }
 
 // توحيد الحروف العربية للبحث بالاسم (أ/إ/آ = ا، ة = ه، ى = ي)
@@ -744,7 +796,7 @@ function matchesScan(r){
   if(cd && normCode(cd) === normCode(t)) return true;
   const tk = gtinKey(t);
   if(tk && tk.length >= 8 && r._gtin === tk) return true;
-  const linked = barcodeLinks[linkKey(t)];
+  const linked = linkedCode(t);
   return !!(linked && cd && normCode(cd) === linked);
 }
 
@@ -814,7 +866,7 @@ function renderLinkResults(){
 }
 function pickLink(r){
   const scanned = linkTerm;
-  saveLink(scanned, r.code);
+  saveLink(scanned, r);
   hideLinkPanel();
   barcodeSearch.value = scanned;
   runScan();
@@ -1419,6 +1471,8 @@ function loadPrintSettings(){
 }
 loadPrintSettings();
 
+document.getElementById('exportLinksBtn').addEventListener('click', exportLinks);
+loadSharedLinks();
 if(!loadSavedStock()){
   statusEl.className = 'status';
   statusEl.textContent = 'ارفع ملف مخزون الفرع من جوليب علشان تبدأ.';
