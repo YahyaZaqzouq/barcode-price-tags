@@ -6,14 +6,8 @@ echo   Upload updates to GitHub
 echo ============================================
 echo.
 
-echo [1/2] Building item list from Excel ...
-node build-inventory.js
-if errorlevel 1 goto fail
-
-echo.
-echo [2/2] Uploading to GitHub ...
 git add -A
-git commit -m "update prices and items"
+git commit -m "update price tag tool"
 git push origin main
 if errorlevel 1 goto fail
 
